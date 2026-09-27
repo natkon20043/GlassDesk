@@ -1,0 +1,12 @@
+# Build output
+.build/
+dist/
+*.app
+*.zip
+
+# Xcode / SwiftPM per-user state
+.swiftpm/
+xcuserdata/
+*.xcuserstate
+
+.DS_Store
