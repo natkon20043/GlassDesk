@@ -140,3 +140,7 @@ rm -f ~/Library/LaunchAgents/local.glassdesk.plist
 rm -rf ~/Library/Application\ Support/GlassDesk   # GIF Buddy's saved GIF
 defaults delete local.glassdesk
 ```
+
+## License
+
+GlassDesk is released under the [MIT License](LICENSE): free to use, modify and share.
