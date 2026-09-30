@@ -86,6 +86,11 @@ Calendars (Full Access).
 
 ## Controls (the ✨ icon in the menu bar)
 
+The ✨ icon opens a glass hub. Its three round buttons slide out cards of settings: **General**
+to the left, **Widgets** to the right and **Extras** underneath. The **Transparency** slider
+(fades the glass of every widget and the top bar so the sharp wallpaper shows through),
+**Open at Login** and **Quit** sit on the hub itself.
+
 | Item | What it does |
 | --- | --- |
 | Glass Menu Bar | Turn the menu bar glass on/off |
