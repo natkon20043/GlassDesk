@@ -37,6 +37,22 @@ private struct LightGlow<S: InsettableShape>: View {
     }
 }
 
+/// One layer of Liquid Glass whose strength follows the Transparency slider. It sits on its
+/// own layer so fading it lets the sharp wallpaper through; what glass remains still bends
+/// the light at the edges. Used by the widget cards and the top bar alike.
+struct AdjustableGlass<S: Shape>: View {
+    let shape: S
+    var interactive = false
+
+    var body: some View {
+        let settings = Settings.shared
+        let glass = interactive ? settings.glass.interactive() : settings.glass
+        Color.clear
+            .glassEffect(glass, in: shape)
+            .opacity(settings.glassStrength)
+    }
+}
+
 /// A rounded Liquid Glass card, the shared chrome for every desktop widget.
 struct GlassCard<Content: View>: View {
     static var cornerRadius: CGFloat { 28 }
@@ -55,12 +71,7 @@ struct GlassCard<Content: View>: View {
                 if settings.glowEnabled { LightGlow(shape: shape, width: width) }
             }
             .contentShape(shape)
-            .background {
-                // The glass sits on its own layer so its strength can be faded with the slider.
-                Color.clear
-                    .glassEffect(settings.glass.interactive(), in: shape)
-                    .opacity(settings.glassStrength)
-            }
+            .background { AdjustableGlass(shape: shape, interactive: true) }
             .overlay {
                 if settings.ringEnabled { GlassRim(shape: shape) }
             }

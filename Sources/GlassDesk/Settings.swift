@@ -139,4 +139,14 @@ final class Settings {
         }
         return glass
     }
+
+    /// Glass for the settings hub. It ignores the Transparency slider and Clearer Glass so the
+    /// menu text always stays readable, but follows the chosen tint.
+    var hubGlass: Glass {
+        var glass: Glass = .regular
+        if let color = tint.color {
+            glass = glass.tint(color.opacity(0.28))
+        }
+        return glass
+    }
 }

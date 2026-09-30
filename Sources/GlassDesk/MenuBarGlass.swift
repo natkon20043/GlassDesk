@@ -50,7 +50,10 @@ final class MenuBarGlassController {
         window.isReleasedWhenClosed = false
         window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.mainMenuWindow)) - 1)
         // No .fullScreenAuxiliary: full-screen apps hide the menu bar, so hide the glass too.
-        window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+        // Transient overlays hide during Mission Control and return on the selected Space.
+        // Stationary windows stay above the desktop overview, exposing a frozen sprite.
+        // The goblin inherits this same policy in addGoblin.
+        window.collectionBehavior = [.canJoinAllSpaces, .transient, .ignoresCycle]
 
         let capsule = CGRect(x: edgeInset, y: verticalInset,
                              width: frame.width - edgeInset * 2, height: barHeight - verticalInset * 2)
@@ -95,9 +98,8 @@ private struct MenuBarGlassView: View {
 
     var body: some View {
         let settings = Settings.shared
-        Color.clear
+        AdjustableGlass(shape: Capsule())
             .frame(width: capsule.width, height: capsule.height)
-            .glassEffect(settings.glass, in: .capsule)
             .overlay {
                 if settings.ringEnabled { GlassRim(shape: Capsule()) }
             }
