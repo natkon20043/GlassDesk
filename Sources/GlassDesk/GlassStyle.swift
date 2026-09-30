@@ -55,7 +55,12 @@ struct GlassCard<Content: View>: View {
                 if settings.glowEnabled { LightGlow(shape: shape, width: width) }
             }
             .contentShape(shape)
-            .glassEffect(settings.glass.interactive(), in: shape)
+            .background {
+                // The glass sits on its own layer so its strength can be faded with the slider.
+                Color.clear
+                    .glassEffect(settings.glass.interactive(), in: shape)
+                    .opacity(settings.glassStrength)
+            }
             .overlay {
                 if settings.ringEnabled { GlassRim(shape: shape) }
             }

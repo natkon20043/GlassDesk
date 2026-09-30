@@ -60,6 +60,8 @@ final class Settings {
     var barEnabled: Bool { didSet { defaults.set(barEnabled, forKey: "barEnabled") } }
     var ringEnabled: Bool { didSet { defaults.set(ringEnabled, forKey: "ringEnabled") } }
     var clearGlass: Bool { didSet { defaults.set(clearGlass, forKey: "clearGlass") } }
+    /// How see-through widget glass is, from 0 (full glass) to 1 (as transparent as it goes).
+    var glassTransparency: Double { didSet { defaults.set(glassTransparency, forKey: "glassTransparency") } }
     /// A light wash inside widget cards, imitating the glass's pressed look.
     var glowEnabled: Bool { didSet { defaults.set(glowEnabled, forKey: "glowEnabled") } }
     var widgetsLocked: Bool { didSet { defaults.set(widgetsLocked, forKey: "widgetsLocked") } }
@@ -84,8 +86,9 @@ final class Settings {
         defaults.register(defaults: [
             "barEnabled": true,
             "ringEnabled": true,
-            "clearGlass": false,
-            "glowEnabled": true,
+            "clearGlass": true,
+            "glassTransparency": 0.6,
+            "glowEnabled": false,
             "widgetsLocked": false,
             "videoControls": true,
             "spriteSize": 170.0,
@@ -99,6 +102,7 @@ final class Settings {
         barEnabled = defaults.bool(forKey: "barEnabled")
         ringEnabled = defaults.bool(forKey: "ringEnabled")
         clearGlass = defaults.bool(forKey: "clearGlass")
+        glassTransparency = min(max(defaults.double(forKey: "glassTransparency"), 0), 1)
         glowEnabled = defaults.bool(forKey: "glowEnabled")
         widgetsLocked = defaults.bool(forKey: "widgetsLocked")
         videoControls = defaults.bool(forKey: "videoControls")
@@ -117,6 +121,14 @@ final class Settings {
         defaults.set(enabled.map(\.rawValue), forKey: "enabledWidgets")  // didSet doesn't run in init
         enabledWidgets = enabled
         hiddenCalendars = Set(defaults.stringArray(forKey: "hiddenCalendars") ?? [])
+    }
+
+    /// How strongly the glass is drawn over the desktop. Fading the glass layer lets more of
+    /// the sharp wallpaper through, while what glass remains still bends the light at the edges.
+    /// It never reaches zero, so the card edge and its refraction stay visible.
+    var glassStrength: Double {
+        let leastStrength = 0.12
+        return 1 - glassTransparency * (1 - leastStrength)
     }
 
     /// The Liquid Glass material every surface uses, so tint/clarity changes apply everywhere at once.

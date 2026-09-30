@@ -72,6 +72,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(ActionItem("Clearer Glass", checked: settings.clearGlass) { [unowned self] in
             settings.clearGlass.toggle()
         })
+        menu.addItem(TransparencySliderItem(settings: settings))
         menu.addItem(ActionItem("Light Glow", checked: settings.glowEnabled) { [unowned self] in
             settings.glowEnabled.toggle()
         })
@@ -206,4 +207,40 @@ final class ActionItem: NSMenuItem {
     required init(coder: NSCoder) { fatalError("not used") }
 
     @objc private func fire() { handler() }
+}
+
+/// A menu row holding a smooth slider for how transparent the widget glass is. The widgets
+/// follow the slider while it is dragged, because the menu stays open.
+@MainActor
+final class TransparencySliderItem: NSMenuItem {
+    private let settings: Settings
+    private let slider: NSSlider
+
+    init(settings: Settings) {
+        self.settings = settings
+        self.slider = NSSlider(value: settings.glassTransparency, minValue: 0, maxValue: 1,
+                               target: nil, action: nil)
+        super.init(title: "Transparency", action: nil, keyEquivalent: "")
+
+        let rowWidth: CGFloat = 220
+        let label = NSTextField(labelWithString: "Transparency")
+        label.font = .menuFont(ofSize: 13)
+        label.frame = NSRect(x: 20, y: 28, width: rowWidth - 40, height: 16)
+
+        slider.isContinuous = true
+        slider.target = self
+        slider.action = #selector(sliderMoved)
+        slider.frame = NSRect(x: 20, y: 6, width: rowWidth - 40, height: 20)
+
+        let row = NSView(frame: NSRect(x: 0, y: 0, width: rowWidth, height: 52))
+        row.addSubview(label)
+        row.addSubview(slider)
+        view = row
+    }
+
+    required init(coder: NSCoder) { fatalError("not used") }
+
+    @objc private func sliderMoved() {
+        settings.glassTransparency = slider.doubleValue
+    }
 }
