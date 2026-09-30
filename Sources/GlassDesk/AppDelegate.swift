@@ -31,6 +31,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                                                object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated {
                 self?.bar.rebuild()
+                self?.widgets.rebuildForNewScreen()
                 self?.widgets.ensureOnScreen()
             }
         }

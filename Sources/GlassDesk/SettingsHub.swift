@@ -349,6 +349,9 @@ private struct WidgetCards: View {
                 settings.videoControls.toggle()
             }
         }
+        HubCard(title: "Size") {
+            WidgetSizeSlider()
+        }
         HubCard(title: "Positions") {
             HubRow(title: "Lock Widget Positions", symbol: "lock", checked: settings.widgetsLocked) {
                 settings.widgetsLocked.toggle()
@@ -449,6 +452,28 @@ private struct HubRow: View {
                 .fill(.white.opacity(hovering ? 0.16 : 0))
         )
         .onHover { hovering = $0 }
+    }
+}
+
+/// Fine-tunes widget size on top of the automatic sizing for the screen.
+private struct WidgetSizeSlider: View {
+    @Bindable private var settings = Settings.shared
+
+    var body: some View {
+        VStack(spacing: 4) {
+            HStack {
+                Text("Widget Size")
+                    .font(.system(size: 13.5))
+                Spacer()
+                Text("\(Int((settings.widgetSize * 100).rounded()))%")
+                    .font(.system(size: 12).monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            Slider(value: $settings.widgetSize, in: 0.5...2.0)
+                .controlSize(.small)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
 }
 

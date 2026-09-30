@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 import Observation
 
@@ -62,6 +63,8 @@ final class Settings {
     var clearGlass: Bool { didSet { defaults.set(clearGlass, forKey: "clearGlass") } }
     /// How see-through widget glass is, from 0 (full glass) to 1 (as transparent as it goes).
     var glassTransparency: Double { didSet { defaults.set(glassTransparency, forKey: "glassTransparency") } }
+    /// Extra widget scaling on top of the automatic one for the screen size (1 = automatic).
+    var widgetSize: Double { didSet { defaults.set(widgetSize, forKey: "widgetSize") } }
     /// A light wash inside widget cards, imitating the glass's pressed look.
     var glowEnabled: Bool { didSet { defaults.set(glowEnabled, forKey: "glowEnabled") } }
     var widgetsLocked: Bool { didSet { defaults.set(widgetsLocked, forKey: "widgetsLocked") } }
@@ -88,6 +91,7 @@ final class Settings {
             "ringEnabled": true,
             "clearGlass": true,
             "glassTransparency": 0.6,
+            "widgetSize": 1.0,
             "glowEnabled": false,
             "widgetsLocked": false,
             "videoControls": true,
@@ -103,6 +107,7 @@ final class Settings {
         ringEnabled = defaults.bool(forKey: "ringEnabled")
         clearGlass = defaults.bool(forKey: "clearGlass")
         glassTransparency = min(max(defaults.double(forKey: "glassTransparency"), 0), 1)
+        widgetSize = min(max(defaults.double(forKey: "widgetSize"), 0.5), 2.0)
         glowEnabled = defaults.bool(forKey: "glowEnabled")
         widgetsLocked = defaults.bool(forKey: "widgetsLocked")
         videoControls = defaults.bool(forKey: "videoControls")
@@ -148,5 +153,27 @@ final class Settings {
             glass = glass.tint(color.opacity(0.28))
         }
         return glass
+    }
+}
+
+/// How big widgets are drawn on a screen. Widgets are designed in points for the MacBook
+/// screen (1710 x 1107 points), so a bigger screen scales them up to keep about the same
+/// share of the screen instead of looking tiny. The Widget Size setting adds on top of that.
+///
+/// The smaller of the width and height ratios is used, so an ultrawide monitor (very wide
+/// but not much taller than a laptop) doesn't blow the widgets up to fill its width.
+@MainActor
+enum WidgetScale {
+    static let baselineSize = CGSize(width: 1710, height: 1107)
+    static let smallestAutomatic: CGFloat = 0.85
+    static let largestAutomatic: CGFloat = 2.5
+
+    static func factor(for screen: NSScreen?) -> CGFloat {
+        let size = (screen ?? NSScreen.main)?.frame.size ?? baselineSize
+        let widthRatio = size.width / baselineSize.width
+        let heightRatio = size.height / baselineSize.height
+        let automatic = min(widthRatio, heightRatio)
+        let limited = min(max(automatic, smallestAutomatic), largestAutomatic)
+        return limited * CGFloat(Settings.shared.widgetSize)
     }
 }

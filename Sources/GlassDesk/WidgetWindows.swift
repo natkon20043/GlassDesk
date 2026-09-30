@@ -66,6 +66,8 @@ private struct WidgetRoot: View {
     let kind: WidgetKind
     let mover: WindowMover
 
+    @State private var naturalSize = CGSize.zero
+
     var body: some View {
         widget
             .contextMenu {
@@ -80,7 +82,24 @@ private struct WidgetRoot: View {
         // Transparent margin so the glass shadow is not clipped by the window edge.
         .padding(WidgetController.margin)
         .fixedSize()
-        .onGeometryChange(for: CGSize.self) { $0.size } action: { mover.fit($0) }
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { size in
+            naturalSize = size
+            mover.fit(scaled(size))
+        }
+        // The widget is laid out at its designed size, then drawn bigger to suit the screen.
+        .scaleEffect(scale, anchor: .topLeading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onChange(of: scale) { _, _ in
+            mover.fit(scaled(naturalSize))
+        }
+    }
+
+    private var scale: CGFloat {
+        WidgetScale.factor(for: mover.window?.screen)
+    }
+
+    private func scaled(_ size: CGSize) -> CGSize {
+        CGSize(width: size.width * scale, height: size.height * scale)
     }
 
     @ViewBuilder
@@ -165,6 +184,15 @@ final class WidgetController {
         sync()
     }
 
+    /// After a display change the widgets are sized for the new screen, so start them afresh.
+    func rebuildForNewScreen() {
+        for panel in panels.values { panel.orderOut(nil) }
+        panels.removeAll()
+        occlusionObserver.map(NotificationCenter.default.removeObserver)
+        occlusionObserver = nil
+        sync()
+    }
+
     /// After a display change, pull back any widget that ended up off every screen.
     func ensureOnScreen() {
         let layout = defaultLayout()
@@ -176,7 +204,9 @@ final class WidgetController {
     private func makePanel(_ kind: WidgetKind) -> WidgetPanel {
         let mover = WindowMover()
         let hosting = FirstMouseHostingView(rootView: WidgetRoot(kind: kind, mover: mover))
-        let size = hosting.fittingSize
+        let designed = hosting.fittingSize
+        let scale = WidgetScale.factor(for: NSScreen.main)
+        let size = CGSize(width: designed.width * scale, height: designed.height * scale)
 
         let panel = WidgetPanel(contentRect: NSRect(origin: .zero, size: size),
                                 styleMask: [.borderless, .nonactivatingPanel],
@@ -230,7 +260,8 @@ final class WidgetController {
     private func defaultLayout() -> [WidgetKind: NSPoint] {
         guard let screen = NSScreen.main ?? NSScreen.screens.first else { return [:] }
         let area = screen.visibleFrame.insetBy(dx: 8, dy: 4)
-        let step = cardGap - Self.margin * 2  // windows overlap by their transparent margins
+        let scale = WidgetScale.factor(for: screen)
+        let step = cardGap - Self.margin * 2 * scale  // windows overlap by their transparent margins
 
         var result: [WidgetKind: NSPoint] = [:]
         var columnRight = area.maxX
@@ -259,7 +290,8 @@ final class WidgetController {
     }
 
     private func isVisible(_ frame: NSRect) -> Bool {
-        let card = frame.insetBy(dx: Self.margin, dy: Self.margin)
+        let margin = Self.margin * WidgetScale.factor(for: NSScreen.main)
+        let card = frame.insetBy(dx: margin, dy: margin)
         return NSScreen.screens.contains { $0.visibleFrame.intersection(card).width > 60 }
     }
 }
