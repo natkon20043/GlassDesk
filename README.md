@@ -1,8 +1,12 @@
+<p align="center"><img src="docs/images/icon.png" width="128" alt="GlassDesk icon"></p>
+
 # GlassDesk
 
 A tiny native macOS app that gives the menu bar a Dock-style **Liquid Glass ring** and adds
 eight desktop widgets. Built with SwiftUI's real `glassEffect`, so it is the same material
 the Dock uses, not a CSS blur.
+
+![The glass menu bar](docs/images/menubar.png)
 
 ## Download & install
 
@@ -26,11 +30,22 @@ switched off in the ✨ menu):
   other accounts added to macOS).
 - **Microphone**: the Sound Visualizer measures loudness live; nothing is recorded or saved.
 
+## Widgets
+
+| | |
+| --- | --- |
+| **Clock & Greeting**<br><img src="docs/images/widget-clock.png" width="360"> | **Calendar**<br><img src="docs/images/widget-calendar.png" width="360"> |
+| **Vitals Rings**<br><img src="docs/images/widget-vitals.png" width="360"> | **Time Flies**<br><img src="docs/images/widget-progress.png" width="360"> |
+| **Focus Timer**<br><img src="docs/images/widget-focus.png" width="360"> | **YouTube Player**<br><img src="docs/images/widget-video.png" width="360"> |
+| **Sound Visualizer**<br><img src="docs/images/widget-sound.png" width="360"> | **GIF Buddy**<br><img src="docs/images/widget-sprite.png" width="360"> |
+
+_Photos use demo mode (`GLASSDESK_DEMO=1`): sample events and a placeholder name, so no personal data._
+
 ## What you get
 
 - **Glass menu bar**: one glass capsule drawn *behind* the native (transparent) menu bar,
   stopping just short of the screen edges and running straight behind the notch. Your real
-  menus, Control Center and status icons work exactly as before. Hidden in full-screen apps.
+  menus, Control Center and status icons work exactly as before. Hidden in full-screen apps (including on notched MacBooks, where macOS still reports the top strip as reserved).
 - **Goblin**: a little goblin with a bag of gold strolls back and forth along the glass bar,
   loiters, looks around, and now and then stops to cackle ("heh heh!") as a coin hops out.
 - **RAM in the menu bar**: a ring gauge plus percentage (green, amber over 70%, red over 85%).
@@ -105,6 +120,13 @@ to the left, **Widgets** to the right and **Extras** underneath. The **Transpare
 | Lock / Reset Widget Positions | Drag widgets anywhere; positions are remembered |
 | Snap Widgets to Grid | While dragging, widgets click to a fine 8 pt grid (on by default) |
 | Open at Login | On by default (LaunchAgent `~/Library/LaunchAgents/local.glassdesk.plist`) |
+
+## Code layout
+
+The screen geometry (where the glass bar goes, whether the menu bar is hidden, how big widgets
+are on a given display, where they sit and how they are kept on screen) is plain C++ in
+`Sources/CGlassLayout`, with checks in `Sources/GlassLayoutTests` (`swift run GlassLayoutTests`).
+Drawing stays in Swift because Liquid Glass (`glassEffect`) is a SwiftUI API.
 
 ## Build from source
 

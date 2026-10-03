@@ -25,8 +25,8 @@ final class SpriteStore {
     }
 
     static let shared = SpriteStore()
-    nonisolated static let folder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        .appending(path: "GlassDesk/Sprite")
+    nonisolated static let folder = DemoMode.spriteFolder
+        ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appending(path: "GlassDesk/Sprite")
     /// The finished, background-free GIF that GlassDesk plays.
     static var gifURL: URL { folder.appending(path: "sprite.gif") }
     private static var infoURL: URL { folder.appending(path: "sprite.json") }

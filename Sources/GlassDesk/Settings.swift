@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import CGlassLayout
 import Observation
 
 /// Colour washes that can be mixed into every piece of glass GlassDesk draws.
@@ -158,22 +159,26 @@ final class Settings {
 
 /// How big widgets are drawn on a screen. Widgets are designed in points for the MacBook
 /// screen (1710 x 1107 points), so a bigger screen scales them up to keep about the same
-/// share of the screen instead of looking tiny. The Widget Size setting adds on top of that.
+/// share of the screen instead of looking tiny. The Widget Size setting adds on top of that,
+/// and the result is capped so a widget never ends up larger than the screen it is on.
 ///
-/// The smaller of the width and height ratios is used, so an ultrawide monitor (very wide
-/// but not much taller than a laptop) doesn't blow the widgets up to fill its width.
+/// The sums live in C++ (CGlassLayout), where they are tested without any UI.
 @MainActor
 enum WidgetScale {
-    static let baselineSize = CGSize(width: 1710, height: 1107)
-    static let smallestAutomatic: CGFloat = 0.85
-    static let largestAutomatic: CGFloat = 2.5
-
-    static func factor(for screen: NSScreen?) -> CGFloat {
-        let size = (screen ?? NSScreen.main)?.frame.size ?? baselineSize
-        let widthRatio = size.width / baselineSize.width
-        let heightRatio = size.height / baselineSize.height
-        let automatic = min(widthRatio, heightRatio)
-        let limited = min(max(automatic, smallestAutomatic), largestAutomatic)
-        return limited * CGFloat(Settings.shared.widgetSize)
+    /// `naturalSize` is the widget's unscaled size including its transparent margin.
+    static func factor(for screen: NSScreen, naturalSize: CGSize) -> CGFloat {
+        var rules = GLScaleRules(
+            baselineScreen: GLSize(width: 1710, height: 1107),
+            smallestAutomatic: 0.85,
+            largestAutomatic: 2.5,
+            userMultiplier: Settings.shared.widgetSize,
+            cardMargin: Double(WidgetController.margin),
+            edgeGap: 12
+        )
+        let scale = gl_widget_scale(&rules,
+                                    GLSize(screen.frame.size),
+                                    GLSize(naturalSize),
+                                    GLSize(screen.visibleFrame.size))
+        return CGFloat(scale)
     }
 }

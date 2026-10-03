@@ -4,7 +4,9 @@ import SwiftUI
 /// Big friendly clock with a time-of-day greeting and a bar that fills over each hour.
 /// Redraws once a minute: every redraw makes WindowServer re-blur the glass behind it.
 struct ClockWidget: View {
-    private let firstName = NSFullUserName().split(separator: " ").first.map(String.init) ?? ""
+    private let firstName = DemoMode.isOn
+        ? DemoMode.firstName
+        : NSFullUserName().split(separator: " ").first.map(String.init) ?? ""
     private let uses12Hour = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current)?.contains("a") ?? false
 
     var body: some View {

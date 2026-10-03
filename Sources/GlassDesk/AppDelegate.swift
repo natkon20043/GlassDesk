@@ -30,9 +30,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
                                                object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated {
-                self?.bar.rebuild()
-                self?.widgets.rebuildForNewScreen()
-                self?.widgets.ensureOnScreen()
+                self?.bar.refreshSoon()
+                self?.widgets.screensChanged()
             }
         }
     }

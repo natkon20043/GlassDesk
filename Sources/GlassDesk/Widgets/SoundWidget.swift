@@ -76,7 +76,42 @@ final class SoundMeter {
         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone")!)
     }
 
+    /// Demo mode: a moving spectrum made up on the spot, so no microphone is involved.
+    @ObservationIgnored private var demoTimer: Timer?
+
+    private func startDemo() {
+        access = .granted
+        isListening = true
+        var phase: Float = 0
+        demoTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                phase += 0.22
+                var fresh = [Float](repeating: 0, count: Self.bandCount)
+                for index in fresh.indices {
+                    let position = Float(index) / Float(Self.bandCount)
+                    // Loudest in the low and middle bands, with a slow ripple moving along.
+                    let envelope = 0.15 + 0.85 * exp(-pow(position - 0.28, 2) / 0.08)
+                    let ripple = 0.5 + 0.5 * sin(phase + Float(index) * 0.55)
+                    fresh[index] = min(1, envelope * (0.35 + 0.65 * ripple))
+                }
+                self.publish(-26 + 8 * sin(phase * 0.7), fresh)
+            }
+        }
+    }
+
     private func updateEngine() {
+        if DemoMode.isOn {
+            let shouldRun = isVisible && !isPaused
+            if shouldRun, demoTimer == nil {
+                startDemo()
+            } else if !shouldRun {
+                demoTimer?.invalidate()
+                demoTimer = nil
+                isListening = false
+            }
+            return
+        }
         let shouldListen = isVisible && !isPaused
         if shouldListen, access == .unknown {
             requestAccess()

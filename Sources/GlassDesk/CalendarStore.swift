@@ -22,6 +22,12 @@ final class CalendarStore {
     @ObservationIgnored private var timer: Timer?
 
     private init() {
+        if DemoMode.isOn {
+            // Made-up events, so a photo of the widget contains nothing personal.
+            access = .granted
+            events = DemoMode.sampleEvents(in: store)
+            return
+        }
         access = Self.currentAccess()
         NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.reload() }
@@ -53,6 +59,7 @@ final class CalendarStore {
     }
 
     func reload() {
+        if DemoMode.isOn { return }
         guard access == .granted else {
             events = []
             return

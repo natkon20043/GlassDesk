@@ -15,6 +15,7 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 BIN="$(xcrun swift build -c release --arch arm64 --arch x86_64 --show-bin-path)"
 cp "$BIN/GlassDesk" "$APP/Contents/MacOS/GlassDesk"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
+cp Resources/GlassDesk.icns "$APP/Contents/Resources/GlassDesk.icns"
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$APP/Contents/Info.plist"
 codesign --force --sign - "$APP"
 

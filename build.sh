@@ -11,6 +11,7 @@ rm -rf "$STAGE"
 mkdir -p "$STAGE/Contents/MacOS" "$STAGE/Contents/Resources"
 cp .build/release/GlassDesk "$STAGE/Contents/MacOS/GlassDesk"
 cp Resources/Info.plist "$STAGE/Contents/Info.plist"
+cp Resources/GlassDesk.icns "$STAGE/Contents/Resources/GlassDesk.icns"
 # Sign with the Apple Development identity when there is one, so macOS privacy grants
 # (Calendar access) survive rebuilds; fall back to ad-hoc signing otherwise.
 IDENTITY=$(security find-identity -v -p codesigning | awk -F'"' '/Apple Development/ {print $2; exit}')

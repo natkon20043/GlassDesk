@@ -8,6 +8,8 @@
     <string>GlassDesk</string>
     <key>CFBundleDisplayName</key>
     <string>GlassDesk</string>
+    <key>CFBundleIconFile</key>
+    <string>GlassDesk</string>
     <key>CFBundleExecutable</key>
     <string>GlassDesk</string>
     <key>CFBundlePackageType</key>
