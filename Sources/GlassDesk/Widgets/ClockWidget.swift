@@ -72,7 +72,7 @@ private struct HourBar: View {
     }
 }
 
-/// Shared accent colours for the widgets.
+/// Shared accent colors for the widgets.
 enum Palette {
     static let rose = Color(red: 1.00, green: 0.22, blue: 0.45)
     static let lime = Color(red: 0.62, green: 1.00, blue: 0.22)

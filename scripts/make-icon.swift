@@ -3,7 +3,7 @@
 //   xcrun swift scripts/make-icon.swift
 //
 // The icon is drawn in code (no image editor needed), so it can be tweaked and regenerated.
-// It shows what the app is: translucent glass widget cards over a colourful backdrop, one of them
+// It shows what the app is: translucent glass widget cards over a colorful backdrop, one of them
 // with the activity rings of the Vitals widget, and the sparkle that is GlassDesk's menu bar icon.
 
 import AppKit

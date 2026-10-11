@@ -248,7 +248,7 @@ struct SoundWidget: View {
     }
 }
 
-/// Bars mirrored about a centre line, coloured from mint (soft) through gold to rose (loud).
+/// Bars mirrored about a centre line, colored from mint (soft) through gold to rose (loud).
 /// Plain Core Animation layers updated in place, bypassing SwiftUI for the per-frame work.
 private struct SpectrumBars: NSViewRepresentable {
     func makeNSView(context: Context) -> SpectrumBarsView {
@@ -263,7 +263,7 @@ private struct SpectrumBars: NSViewRepresentable {
 final class SpectrumBarsView: NSView {
     private var bars: [CALayer] = []
     private var levels: [Float]
-    /// Pre-mixed colours so a frame never converts colour spaces.
+    /// Pre-mixed colors so a frame never converts color spaces.
     private static let colors: [CGColor] = (0...32).map { step in
         let t = Double(step) / 32
         let (from, to, local) = t < 0.5 ? (Palette.mint, Palette.sun, t * 2) : (Palette.sun, Palette.rose, (t - 0.5) * 2)

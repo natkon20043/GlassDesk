@@ -3,7 +3,7 @@ import SwiftUI
 import CGlassLayout
 import Observation
 
-/// Colour washes that can be mixed into every piece of glass GlassDesk draws.
+/// Color washes that can be mixed into every piece of glass GlassDesk draws.
 enum GlassTint: String, CaseIterable, Identifiable {
     case none, ocean, sunset, mint, grape, rose
 

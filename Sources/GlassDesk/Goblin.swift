@@ -243,8 +243,12 @@ private struct GoblinFigure: View {
 
             // Big pointy ears, then the head over them.
             let ears = Path { p in
-                p.move(to: CGPoint(x: 11.2, y: 5.2)); p.addLine(to: CGPoint(x: 5.4, y: 2.2)); p.addLine(to: CGPoint(x: 11.4, y: 8.0))
-                p.move(to: CGPoint(x: 18.8, y: 5.2)); p.addLine(to: CGPoint(x: 24.6, y: 2.2)); p.addLine(to: CGPoint(x: 18.6, y: 8.0))
+                p.move(to: CGPoint(x: 11.2, y: 5.2))
+                p.addLine(to: CGPoint(x: 5.4, y: 2.2))
+                p.addLine(to: CGPoint(x: 11.4, y: 8.0))
+                p.move(to: CGPoint(x: 18.8, y: 5.2))
+                p.addLine(to: CGPoint(x: 24.6, y: 2.2))
+                p.addLine(to: CGPoint(x: 18.6, y: 8.0))
             }
             context.fill(ears, with: .color(skin))
             context.stroke(ears, with: .color(skinDark), lineWidth: 0.6)
@@ -254,7 +258,10 @@ private struct GoblinFigure: View {
 
             // Long hooked nose.
             let nose = Path { p in
-                p.move(to: CGPoint(x: 19.0, y: 5.8)); p.addLine(to: CGPoint(x: 22.6, y: 8.0)); p.addLine(to: CGPoint(x: 18.8, y: 8.4)); p.closeSubpath()
+                p.move(to: CGPoint(x: 19.0, y: 5.8))
+                p.addLine(to: CGPoint(x: 22.6, y: 8.0))
+                p.addLine(to: CGPoint(x: 18.8, y: 8.4))
+                p.closeSubpath()
             }
             context.fill(nose, with: .color(skin))
             context.stroke(nose, with: .color(skinDark), lineWidth: 0.5)
@@ -263,7 +270,9 @@ private struct GoblinFigure: View {
                 // Squinting ^ ^ eyes and a wide-open cackle.
                 for eyeX in [14.6, 17.4] as [CGFloat] {
                     context.stroke(Path { p in
-                        p.move(to: CGPoint(x: eyeX - 1, y: 5.8)); p.addLine(to: CGPoint(x: eyeX, y: 4.8)); p.addLine(to: CGPoint(x: eyeX + 1, y: 5.8))
+                        p.move(to: CGPoint(x: eyeX - 1, y: 5.8))
+                        p.addLine(to: CGPoint(x: eyeX, y: 4.8))
+                        p.addLine(to: CGPoint(x: eyeX + 1, y: 5.8))
                     }, with: .color(.black), style: StrokeStyle(lineWidth: 0.7, lineCap: .round, lineJoin: .round))
                 }
                 let open = 1.8 + CGFloat(abs(sin(laughTime * 16))) * 1.0
@@ -276,7 +285,8 @@ private struct GoblinFigure: View {
                     context.fill(Path(ellipseIn: CGRect(x: eyeX - 0.2, y: 5.0, width: 1.0, height: 1.0)), with: .color(.black))
                 }
                 context.stroke(Path { p in
-                    p.move(to: CGPoint(x: 14.8, y: 8.6)); p.addQuadCurve(to: CGPoint(x: 18.6, y: 8.3), control: CGPoint(x: 16.8, y: 10.2))
+                    p.move(to: CGPoint(x: 14.8, y: 8.6))
+                    p.addQuadCurve(to: CGPoint(x: 18.6, y: 8.3), control: CGPoint(x: 16.8, y: 10.2))
                 }, with: .color(skinDark), style: StrokeStyle(lineWidth: 0.7, lineCap: .round))
             }
         }

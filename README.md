@@ -54,7 +54,7 @@ _Photos use demo mode (`GLASSDESK_DEMO=1`): sample events and a placeholder name
 - **Vitals Rings**: Apple Watch–style rings for CPU, memory, disk and battery (⚡ when charging).
 - **Time Flies**: how much of today, this week, this month and this year is gone.
 - **Focus Timer**: Pomodoro (25 / 5, long 15-minute break after 4). Plays the "Glass" sound when done.
-- **Calendar**: today's date, a 7-day strip with coloured dots for busy days, and your next
+- **Calendar**: today's date, a 7-day strip with colored dots for busy days, and your next
   five events with countdowns ("in 25m", "Now") and a **Join** button for Zoom / Meet / Teams /
   Webex calls starting within 15 minutes. Click an event to open it in Calendar.
 - **YouTube Player**: paste a YouTube link (watch, youtu.be, Shorts, live, or with a `t=`
